@@ -3,11 +3,11 @@
 using namespace std;
 
 #define MAXSIZE 100
-typedef struct
-{
-    ElemType *elem;
-    int length;
-}SqlList;
+//typedef struct
+//{
+//    ElemType *elem;
+//    int length;
+//}SqlList;
 
 int main()
 {
