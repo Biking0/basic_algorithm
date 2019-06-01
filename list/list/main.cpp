@@ -1,49 +1,192 @@
-// 2019-04-10
-// çº¿æ€§è¡¨é¡ºåºç»“æ„
 
-#include <iostream>
+/**
+* @author huihut
+* @E-mail:huihut@outlook.com
+* @version ´´½¨Ê±¼ä£º2016Äê9ÔÂ9ÈÕ
+* ËµÃ÷£º±¾³ÌĞòÊµÏÖÁËÒ»¸öË³Ğò±í¡£
+*/
 
-using namespace std;
-// å„ä¸ªæ–¹æ³•ï¼Œè¿”å›çŠ¶æ€ï¼Œ0ï¼Œ1
+#include "stdio.h"
+#include "stdlib.h"
+#include "malloc.h"
 
-// å®šä¹‰æœ€å¤§é•¿åº¦
-#define MAXSIZE 100
+//5¸ö³£Á¿¶¨Òå
+#define TRUE 1
+#define FALSE 0
+#define OK 1
+#define ERROR 0
+#define OVERFLOW -1
 
-// å®šä¹‰é¡ºåºè¡¨ç»“æ„
-typedef struct
-{
-    int *elem;
+//²âÊÔ³ÌĞò³¤¶È¶¨Òå
+#define LONGTH 5
+
+//ÀàĞÍ¶¨Òå
+typedef int Status;
+typedef int ElemType;
+
+//Ë³ĞòÕ»µÄÀàĞÍ
+typedef struct {
+    ElemType *elem;
     int length;
-}SqlList;
+    int size;
+    int increment;
+} SqList;
 
+Status InitList_Sq(SqList &L, int size, int inc);    //³õÊ¼»¯Ë³Ğò±íL
+Status DestroyList_Sq(SqList &L);                     //Ïú»ÙË³Ğò±íL
+Status ClearList_Sq(SqList &L);                         //½«Ë³Ğò±íLÇå¿Õ
+Status ListEmpty_Sq(SqList L);                         //ÈôË³Ğò±íLÎª¿Õ±í£¬Ôò·µ»ØTRUE£¬·ñÔòFALSE
+int ListLength_Sq(SqList L);                         //·µ»ØË³Ğò±íLÖĞÔªËØ¸öÊı
+Status GetElem_Sq(SqList L, int i, ElemType &e);     //ÓÃe·µ»ØË³Ğò±íLÖĞµÚi¸öÔªËØµÄÖµ
+int Search_Sq(SqList L, ElemType e);                 //ÔÚË³Ğò±íLË³Ğò²éÕÒÔªËØe£¬³É¹¦Ê±·µ»Ø¸ÃÔªËØÔÚ±íÖĞµÚÒ»´Î³öÏÖµÄÎ»ÖÃ£¬·ñÔò·µ»Ø-1
+Status ListTraverse_Sq(SqList L, Status(*visit)(ElemType e));    //±éÀúË³Ğò±íL£¬ÒÀ´Î¶ÔÃ¿¸öÔªËØµ÷ÓÃº¯Êıvisit()
+Status PutElem_Sq(SqList &L, int i, ElemType e);     //½«Ë³Ğò±íLÖĞµÚi¸öÔªËØ¸³ÖµÎªe
+Status Append_Sq(SqList &L, ElemType e);             //ÔÚË³Ğò±íL±íÎ²Ìí¼ÓÔªËØe
+Status DeleteLast_Sq(SqList &L, ElemType &e);         //É¾³ıË³Ğò±íLµÄ±íÎ²ÔªËØ£¬²¢ÓÃ²ÎÊıe·µ»ØÆäÖµ
 
+//³õÊ¼»¯Ë³Ğò±íL
+Status InitList_Sq(SqList &L, int size, int inc) {
+    L.elem = (ElemType *)malloc(size * sizeof(ElemType));
+    if (NULL == L.elem) return OVERFLOW;
+    L.length = 0;
+    L.size = size;
+    L.increment = inc;
+    return OK;
+}
 
-// åˆå§‹åŒ–ï¼Œåˆ›å»ºç©ºè¡¨
-int InitList(SqlList &L)
-{
-    L.elem=new int[MAXSIZE];
-    // å†…å­˜æº¢å‡ºï¼Œåˆ†é…å¤±è´¥
+//Ïú»ÙË³Ğò±íL
+Status DestroyList_Sq(SqList &L) {
+    free(L.elem);
+    L.elem = NULL;
+    return OK;
+}
 
-    cout<<L.elem<<endl;
-//    if(!L.elem) exit(overflow_error);
-    L.length=0;
-    cout<<'åˆå§‹åŒ–è¡¨æˆåŠŸ'<<endl;
-    return 0;
+//½«Ë³Ğò±íLÇå¿Õ
+Status ClearList_Sq(SqList &L) {
+    if (0 != L.length) L.length = 0;
+    return OK;
+}
 
+//ÈôË³Ğò±íLÎª¿Õ±í£¬Ôò·µ»ØTRUE£¬·ñÔòFALSE
+Status ListEmpty_Sq(SqList L) {
+    if (0 == L.length) return TRUE;
+    return FALSE;
+}
+
+//·µ»ØË³Ğò±íLÖĞÔªËØ¸öÊı
+int ListLength_Sq(SqList L) {
+    return L.length;
+}
+
+// ÓÃe·µ»ØË³Ğò±íLÖĞµÚi¸öÔªËØµÄÖµ
+Status GetElem_Sq(SqList L, int i, ElemType &e) {
+    e = L.elem[--i];
+    return OK;
 }
 
 
-int main()
-{
-    cout << "Hello World!" << endl;
-    SqlList list;
+// ÔÚË³Ğò±íLË³Ğò²éÕÒÔªËØe£¬³É¹¦Ê±·µ»Ø¸ÃÔªËØÔÚ±íÖĞµÚÒ»´Î³öÏÖµÄÎ»ÖÃ£¬·ñÔò·µ»Ø - 1
+int Search_Sq(SqList L, ElemType e) {
+    int i = 0;
+    while (i < L.length && L.elem[i] != e) i++;
+    if (i < L.length) return i;
+    else return -1;
+}
 
-    // åˆå§‹åŒ–
-    InitList(list);
+//±éÀúµ÷ÓÃ
+Status visit(ElemType e) {
+    printf("%d\t",e);
+}
+
+//±éÀúË³Ğò±íL£¬ÒÀ´Î¶ÔÃ¿¸öÔªËØµ÷ÓÃº¯Êıvisit()
+Status ListTraverse_Sq(SqList L, Status(*visit)(ElemType e)) {
+    if (0 == L.length) return ERROR;
+    for (int i = 0; i < L.length; i++) {
+        visit(L.elem[i]);
+    }
+    return OK;
+}
+
+//½«Ë³Ğò±íLÖĞµÚi¸öÔªËØ¸³ÖµÎªe
+Status PutElem_Sq(SqList &L, int i, ElemType e) {
+    if (i > L.length) return ERROR;
+    e = L.elem[--i];
+    return OK;
+
+}
+
+//ÔÚË³Ğò±íL±íÎ²Ìí¼ÓÔªËØe
+Status Append_Sq(SqList &L, ElemType e) {
+    if (L.length >= L.size) return ERROR;
+    L.elem[L.length] = e;
+    L.length++;
+    return OK;
+}
+
+//É¾³ıË³Ğò±íLµÄ±íÎ²ÔªËØ£¬²¢ÓÃ²ÎÊıe·µ»ØÆäÖµ
+Status DeleteLast_Sq(SqList &L, ElemType &e) {
+    if (0 == L.length) return ERROR;
+    e = L.elem[L.length - 1];
+    L.length--;
+    return OK;
+}
+
+int main() {
+    //¶¨Òå±íL
+    SqList L;
+
+    //¶¨Òå²âÁ¿Öµ
+    int size, increment, i;
+
+    //³õÊ¼»¯²âÊÔÖµ
+    size = LONGTH;
+    increment = LONGTH;
+    ElemType e, eArray[LONGTH] = { 1, 2, 3, 4, 5 };
+
+    //ÏÔÊ¾²âÊÔÖµ
+    printf("---¡¾Ë³ĞòÕ»¡¿---\n");
+    printf("±íLµÄsizeÎª£º%d\n±íLµÄincrementÎª£º%d\n", size, increment);
+    printf("´ı²âÊÔÔªËØÎª£º\n");
+    for (i = 0; i < LONGTH; i++) {
+        printf("%d\t", eArray[i]);
+    }
+    printf("\n");
+
+    //³õÊ¼»¯Ë³Ğò±í
+    if (!InitList_Sq(L, size, increment)) {
+        printf("³õÊ¼»¯Ë³Ğò±íÊ§°Ü\n");
+        exit(0);
+    }
+    printf("ÒÑ³õÊ¼»¯Ë³Ğò±í\n");
+
+    //ÅĞ¿Õ
+    if(TRUE == ListEmpty_Sq(L)) printf("´Ë±íÎª¿Õ±í\n");
+    else printf("´Ë±í²»ÊÇ¿Õ±í\n");
+
+    //Èë±í
+    printf("½«´ı²âÔªËØÈë±í£º\n");
+    for (i = 0; i < LONGTH; i++) {
+        if(ERROR == Append_Sq(L, eArray[i])) printf("Èë±íÊ§°Ü\n");;
+    }
+    printf("Èë±í³É¹¦\n");
+
+    //±éÀúË³Ğò±íL
+    printf("´ËÊ±±íÄÚÔªËØÎª£º\n");
+    ListTraverse_Sq(L, visit);
+
+    //³ö±í
+    printf("\n½«±íÎ²ÔªËØÈë±íµ½e£º\n");
+    if (ERROR == DeleteLast_Sq(L, e)) printf("³ö±íÊ§°Ü\n");
+    printf("³ö±í³É¹¦\n³ö±íÔªËØÎª%d\n",e);
+
+    //±éÀúË³Ğò±íL
+    printf("´ËÊ±±íÄÚÔªËØÎª£º\n");
+    ListTraverse_Sq(L, visit);
+
+    //Ïú»ÙË³Ğò±í
+    printf("\nÏú»ÙË³Ğò±í\n");
+    if(OK == DestroyList_Sq(L)) printf("Ïú»Ù³É¹¦\n");
+    else printf("Ïú»ÙÊ§°Ü\n");
 
     return 0;
 }
-
-
-
-
